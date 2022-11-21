@@ -4,7 +4,7 @@ from rest_framework import status
 from rest_framework.response import Response
 from .serializers import RupeeToPaisaSerializer
 from rest_framework.views import APIView
-from atlas.models import Convertion
+from atlas.models import Convertion, Counter
 
 # Create your views here.
 
@@ -16,16 +16,23 @@ class RupeeConvertionView(APIView):
         return Response(serializer.data)
    
 
-
     def post(self, request):
         try:
             serializer = RupeeToPaisaSerializer(data=request.data)
             serializer.is_valid(raise_exception=True)
             data = serializer.validated_data
-            
+            # get paisa from requested data      
             paisa = data.get('paisa')
+            # check whether it exists in database, if exists than show the lastest one.
             paisa_obj = Convertion.objects.filter(paisa=paisa).last()
-            import ipdb;ipdb.set_trace()         
+            # to filter the first one.
+            count_object = Counter.objects.filter(paisa=paisa_obj).first()
+            if count_object:
+                count_object.count = count_object.count + 1
+                count_object.save()
+                
+
+            
             if paisa_obj:
                 print('returning from db')
                 rupee_val = paisa_obj.rupee
