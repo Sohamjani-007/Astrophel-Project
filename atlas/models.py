@@ -12,3 +12,11 @@ class Convertion(TimeStampedModel):
    rupee = models.FloatField(blank=False, null=False)
    datetime = models.DateTimeField(default=datetime.now)
 
+
+class Counter(TimeStampedModel):
+     paisa = models.ForeignKey(Convertion, on_delete=models.CASCADE ,related_name='counter_paisa')
+     count = models.IntegerField(blank=False, null=False)
+
+
+
+
