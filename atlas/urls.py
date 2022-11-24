@@ -1,9 +1,8 @@
-from django.conf.urls import url
 from . import views
+from django.urls import path
 
 urlpatterns = [
-    url(r'^paisa_to_rupee/$', views.RupeeConvertionView.as_view(), name='atlas_money'),
+    path('paisa_to_rupee/', views.RupeeConvertionView.as_view()),
 ]
-
 
 
