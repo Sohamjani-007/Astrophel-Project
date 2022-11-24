@@ -1,9 +1,13 @@
-from .models import Counter, Convertion, ServiceA 
+import uuid
 from django.db.models.signals import post_save
+from django.core.mail import EmailMessage
 from django.dispatch import receiver
+from django.conf import settings
 from django.shortcuts import get_object_or_404
+from django.core.mail import send_mail, send_mass_mail
+from .models import Counter, Convertion, ServiceA 
 from atlas.choices import PaymentCurrencyStatusChoices, PaymentStatusChoices
- 
+
 
 @receiver(post_save, sender=Convertion)
 def create_new_calculation(sender, instance, created, **kwargs):
@@ -23,11 +27,21 @@ def order_item_paid(sender, instance, **kwargs):
         print('!!!! ServiceA Order object exists. Which is pending by customer.')
         if instance.paisa ==  service_object.payment_gross.paisa:
             instance.payment_status_to_payment_completed()
+            unique_order_id = uuid.uuid4().hex
+            message2 = (f'Your Order no : {unique_order_id}', 'Kuddos. You have purchased the perfect option for you.', 'sohamjani007@example.com', ['soham.sanjay@otocapital.in'])
+            print(message2, len(message2))
+            send_mass_mail([message2], fail_silently=False)
+            service_object.cart = (f'CartID: {unique_order_id}')
             instance.save()
-
+            service_object.save()
             print("!!!.Amount Verified")
         else:
             print(f"Newly created is :: {created}")
+
+
+
+
+
 
 
                 

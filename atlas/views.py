@@ -1,3 +1,4 @@
+from logging import Logger
 from django.shortcuts import render
 from rest_framework import viewsets
 from rest_framework import status
@@ -69,4 +70,5 @@ class RupeeConvertionView(APIView):
             return Response({"Rupee" : rupee_val, "Paisa" : data.get('paisa'), "From_DB" : rupee_bool, "Denomination": notesCount}, status=status.HTTP_200_OK)  
                         
         except Exception as e:
+            Logger.exception(e, exec_info=e)
             return Response(e.__str__(), status=status.HTTP_400_BAD_REQUEST)
