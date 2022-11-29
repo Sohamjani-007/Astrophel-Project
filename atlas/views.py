@@ -1,14 +1,43 @@
-from logging import Logger
-from django.shortcuts import render
-from rest_framework import viewsets
+import logging
 from rest_framework import status
-from rest_framework.response import Response
-from .serializers import RupeeToPaisaSerializer
+from django.contrib.auth import authenticate
+from django.views.decorators.csrf import csrf_exempt
+from rest_framework.authtoken.models import Token
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework.permissions import AllowAny
+from rest_framework.status import (
+    HTTP_400_BAD_REQUEST,
+    HTTP_404_NOT_FOUND,
+    HTTP_200_OK
+)
 from atlas.models import Convertion, Counter
+from .serializers import RupeeToPaisaSerializer
+
+
+logger = logging.getLogger(__name__)
 
 # Create your views here.
+@csrf_exempt
+@api_view(["POST"])
+@permission_classes((AllowAny,))
+def login(request):
+    username = request.data.get("username")
+    password = request.data.get("password")
+    if username is None or password is None:
+        return Response({'error': 'Please provide both username and password'},
+                        status=HTTP_400_BAD_REQUEST)
+    user = authenticate(username=username, password=password)
+    if not user:
+        return Response({'error': 'Invalid Credentials'},
+                        status=HTTP_404_NOT_FOUND)
+    token, _ = Token.objects.get_or_create(user=user)
+    return Response({'token': token.key},
+                    status=HTTP_200_OK)
 
+
+        
 class RupeeConvertionView(APIView):
 
     def get(self, request, format=None):
@@ -70,5 +99,5 @@ class RupeeConvertionView(APIView):
             return Response({"Rupee" : rupee_val, "Paisa" : data.get('paisa'), "From_DB" : rupee_bool, "Denomination": notesCount}, status=status.HTTP_200_OK)  
                         
         except Exception as e:
-            Logger.exception(e, exec_info=e)
+            logger.exception(e, exec_info=e)
             return Response(e.__str__(), status=status.HTTP_400_BAD_REQUEST)
