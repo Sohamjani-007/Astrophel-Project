@@ -33,8 +33,17 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 
-# Application definition
 
+# Createsuper Details -->
+# Username: sohamjani
+# Email address: starson600@gmail.com
+# Password: Soham@123
+# Password (again): Soham@123
+# Superuser created successfully.
+
+
+
+# Application definition
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -43,6 +52,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'atlas',
+    'rest_framework',
+    'rest_framework.authtoken'
 ]
 
 MIDDLEWARE = [
@@ -109,6 +120,14 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+REST_FRAMEWORK = {
+   'DEFAULT_AUTHENTICATION_CLASSES': (
+       'rest_framework.authentication.TokenAuthentication',
+   ),
+   'DEFAULT_PERMISSION_CLASSES': (
+                'rest_framework.permissions.IsAuthenticated',
+   ),
+}
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.9/topics/i18n/
@@ -132,8 +151,6 @@ STATIC_URL = '/static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
-
-
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = env('EMAIL_HOST')
 EMAIL_PORT = 587
@@ -143,3 +160,7 @@ EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
 
 # Custom setting. To email
 RECIPIENT_ADDRESS = env('RECIPIENT_ADDRESS')
+
+# Twillio. To send SMS.
+TWILIO_ACCOUNT_SID = 'ACa2d60cd5f68c50b32c81a6682f869eb9'
+TWILIO_AUTH_TOKEN = 'ef14618f109463f2fb9e14edc0896070'
