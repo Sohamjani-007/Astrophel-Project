@@ -1,13 +1,14 @@
-
 import uuid as uuid
 from datetime import datetime
 from django.db import models
+from django.contrib.auth.models import User
 from django_fsm import FSMField, transition
 from model_utils.models import TimeStampedModel
 from atlas.choices import PaymentStatusChoices,PaymentCurrencyStatusChoices
 
 
 # Create your models here.
+
 class Convertion(TimeStampedModel):
    class Meta:
         db_table = "paisa"
@@ -33,3 +34,5 @@ class ServiceA(TimeStampedModel):
      cart = models.CharField(max_length=500, blank=False, null=False, help_text="add_items_to_cart")
      payment_gross = models.ForeignKey(Counter, on_delete=models.CASCADE, related_name='service_payment_gross')
      match_currency = FSMField(choices=PaymentCurrencyStatusChoices.choices, null=True, blank=True, default=None, protected=True)
+     reported_by = models.CharField(max_length=50, blank=False, null=False, help_text="reported_by")
+

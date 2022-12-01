@@ -16,6 +16,7 @@ from atlas.models import Convertion, Counter
 from .serializers import RupeeToPaisaSerializer
 
 
+
 logger = logging.getLogger(__name__)
 
 # Create your views here.
@@ -60,9 +61,7 @@ class RupeeConvertionView(APIView):
             if count_object:
                 count_object.count = count_object.count + 1
                 count_object.save()
-                
 
-            
             if paisa_obj:
                 print('returning from db')
                 rupee_val = paisa_obj.rupee
@@ -99,5 +98,9 @@ class RupeeConvertionView(APIView):
             return Response({"Rupee" : rupee_val, "Paisa" : data.get('paisa'), "From_DB" : rupee_bool, "Denomination": notesCount}, status=status.HTTP_200_OK)  
                         
         except Exception as e:
-            logger.exception(e, exec_info=e)
+            logger.exception(e)
             return Response(e.__str__(), status=status.HTTP_400_BAD_REQUEST)
+
+
+
+
